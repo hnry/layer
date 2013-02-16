@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/lovebear/proxy.png)](https://travis-ci.org/lovebear/proxy)
