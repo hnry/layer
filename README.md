@@ -31,6 +31,8 @@ You don't re-write your code! Or have to call `addBig()` directly.
 
 ## Usage / API
 
+### Setting a proxy
+
 `shield.set(context, function to proxy, proxy function)`
 
 ### Skipping your proxy
