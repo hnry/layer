@@ -2,18 +2,23 @@
 
 var layer = {};
 
+// assume browser
+layer.environment = 'browser';
+if (typeof module !== 'undefined' && module.exports) layer.environment = 'nodejs';
+
 /*
  * this is only good for browser's
  * require.js will mess this up
  * find a better default for node
  * aka we need to detect environment
  */
-layer.default_context = this;
+layer._default_context = this;
+if (layer.environment === 'nodejs') layer._default_context = module.parent.exports;
 
 layer.set = function(context, actual, proxy) {
   var completed = false;
 
-  if (!context) context = layer.default_context;
+  if (!context) context = layer._default_context;
 
   var props = Object.keys(context);
   //if (actual && proxy) 
@@ -54,4 +59,4 @@ layer.unset = function(proxy) {
 }
 
 // node
-if (typeof module !== 'undefined' && module.exports) module.exports = layer;
+if (layer.environment === 'nodejs') module.exports = layer;
