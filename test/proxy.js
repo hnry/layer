@@ -1,10 +1,23 @@
-var proxy = require('../index.js');
+var shield = require('../index.js');
 var should = require('should');
 
-describe('', function() {
+describe('shield', function() {
 
-  it('');
+  it('set proxy', function() {
+    var testData = '';
 
+    var proxy = function() {
+      testData += 'proxy';
+    }
 
+    var actual = function() {
+      testData += 'actual';
+    }
+
+    shield.set(null, proxy, actual);
+    actual();
+
+    testData.should.equal('proxyactual');
+  });
 
 });

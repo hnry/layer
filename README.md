@@ -4,6 +4,8 @@
 
 Unobtrusive transparent proxies with very little setup. Doesn't require re-writing existing code. You can just drop it right in!
 
+Runs anywhere there's javascript (browser & node).
+
 --> (shield) --> (function/object)
 
 
@@ -13,14 +15,18 @@ var add = function(x, y) {
   return x + y;
 }
 
+add(2 + 2);
+
 // add a simple proxy without modifying any existing code!
-var shield = require('shield');
 var addBig = function(x, y) { 
   x = x * 100;
   y = y * 100;
 }
 shield.set(null, addBig, add);
 ```
+And that's it, all instances of calling `add()` in your existing code now go through `addBig()` then `add()`
+
+You don't re-write your code!
 
 
 ## Usage / API
