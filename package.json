@@ -1,5 +1,5 @@
 {
-  "name": "shield",
+  "name": "layer",
   "version": "0.0.2",
   "private": false,
   "description": "transparently proxies functions, objects",
@@ -17,5 +17,5 @@
     "mocha": "*",
     "should": "*"
   },
-  "repository": "git://github.com/lovebear/shield.git"
+  "repository": "git://github.com/lovebear/layer.git"
 }

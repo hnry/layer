@@ -1,12 +1,12 @@
-[![Build Status](https://travis-ci.org/lovebear/shield.png)](https://travis-ci.org/lovebear/shield)
+[![Build Status](https://travis-ci.org/lovebear/layer.png)](https://travis-ci.org/lovebear/layer)
 
-# shield
+# layer
 
 Unobtrusive transparent proxies with very little setup. Doesn't require re-writing existing code. You can just drop it right in!
 
 Runs anywhere there's javascript (browser & node).
 
---> (shield) --> (function/object)
+--> (layer) --> (function/object)
 
 
 ```js
@@ -16,7 +16,7 @@ var addBig = function(x, y) {
   y = y * 100;
   return [x, y];
 }
-shield.set(null, add, addBig);
+layer.set(null, add, addBig);
 
 // existing code...
 var add = function(x, y) {
@@ -34,13 +34,13 @@ You don't re-write your code! Or have to call `addBig()` directly.
 
 ### Setting a proxy
 
-`shield.set(context, function to proxy, proxy function)`
+`layer.set(context, function to proxy, proxy function)`
 
 ### Skipping your proxy
-For those times when you want turn the shields down...
+For those times when you want turn the layers down...
 
 `func.skip()` or following out add example `add.skip(2, 2)`
 
 ### Unsetting a proxy
 
-`shield.unset(func)` or following the example: `shield.unset(add)`
+`layer.unset(func)` or following the example: `layer.unset(add)`

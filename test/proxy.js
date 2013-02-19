@@ -1,4 +1,4 @@
-var shield = require('../index.js');
+var layer = require('../index.js');
 var should = require('should');
 
 var testData, proxy, context;
@@ -10,7 +10,7 @@ var testProxy = function(f) {
   testData.should.equal('proxyactual');
 }
 
-describe('shield', function() {
+describe('layer', function() {
 
   beforeEach(function() {
     testData = '';
@@ -30,12 +30,12 @@ describe('shield', function() {
   })
 
   it('sets proxy', function() {
-    shield.set(context, context.actual, proxy);
+    layer.set(context, context.actual, proxy);
     testProxy(context.actual);
   });
 
   it('skips proxy', function() {
-    shield.set(context, context.actual, proxy);
+    layer.set(context, context.actual, proxy);
     var r = context.actual.skip('no mod', 'no mod');
     r[0].should.equal('no mod');
     r[1].should.equal('no mod');
@@ -44,10 +44,10 @@ describe('shield', function() {
 
   it('unsets proxy', function() {
     // double check proxy is set
-    shield.set(context, context.actual, proxy);
+    layer.set(context, context.actual, proxy);
     testProxy(context.actual);
 
-    shield.unset(context.actual);
+    layer.unset(context.actual);
     var r = context.actual('no modifications', 'no modifications');
     r[0].should.equal('no modifications');
     r[1].should.equal('no modifications');
@@ -57,7 +57,7 @@ describe('shield', function() {
   });
 
   it('finds context', function() {
-    shield.set(null, context.actual, proxy);
+    layer.set(null, context.actual, proxy);
     testProxy(context.actual);
   });
 

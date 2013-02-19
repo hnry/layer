@@ -1,8 +1,8 @@
-var shield = {};
+var layer = {};
 
-shield.set = function(context, actual, proxy) {
+layer.set = function(context, actual, proxy) {
   var completed = false;
-  if (!context) global;
+  if (!!context) global;
   var props = Object.keys(context);
   for (var i = 0, l = props.length; i < l; i++) {
     var orig = context[props[i]];
@@ -23,7 +23,7 @@ shield.set = function(context, actual, proxy) {
   if (!completed) throw new Error('Could not set proxy');
 }
 
-shield.unset = function(proxy) {
+layer.unset = function(proxy) {
   var completed = false;
   var orig = proxy.skip;
   if (proxy.skip && proxy.skip._context) {
@@ -41,4 +41,4 @@ shield.unset = function(proxy) {
 }
 
 // node
-if (module && module.exports) module.exports = shield;
+if (module && module.exports) module.exports = layer;

@@ -1,4 +1,4 @@
-var shield = require('../index.js');
+var layer = require('../index.js');
 var should = require('should');
 
 
@@ -8,7 +8,7 @@ describe('errors', function() {
     var noerr = true;
     var nonproxy = function() {};
     try {
-      shield.set(null, nonproxy, function() {});
+      layer.set(null, nonproxy, function() {});
     } catch(e) {
       noerr = false;
     }
@@ -19,7 +19,7 @@ describe('errors', function() {
     var noerr = true;
     var nonproxy = function() {};
     try {
-      shield.unset(nonproxy);
+      layer.unset(nonproxy);
     } catch(e) {
       noerr = false;
     }
