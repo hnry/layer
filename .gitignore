@@ -1,3 +1,7 @@
 v8.log
 .DS_Store
+test.js
 node_modules
+npm-debug.log
+package
+shield-*.tgz

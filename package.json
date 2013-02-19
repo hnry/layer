@@ -1,12 +1,14 @@
 {
-  "name": "proxy??",
+  "name": "shield",
   "version": "0.0.1",
   "private": false,
   "description": "transparent proxies with little setup",
-  "author": "hc",
+  "author": "lovebear",
+  "license": "BSD",
+  "main": "index.js",
   "keywords": ["proxy", "transparent", "proxies"],
   "engines": {
-    "node": ">= 0.6.0",
+    "node": ">= 0.6.0"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha -R dot"
@@ -15,5 +17,5 @@
     "mocha": "*",
     "should": "*"
   },
-  "repository": "git://github.com/lovebear/proxy.git"
+  "repository": "git://github.com/lovebear/shield.git"
 }
