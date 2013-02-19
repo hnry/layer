@@ -1,5 +1,6 @@
 var shield = {};
 shield.set = function(context, actual, proxy) {
+  var completed = false;
   if (!context) {
     context = global;
   }
@@ -16,18 +17,25 @@ shield.set = function(context, actual, proxy) {
       }
       context[props[i]].skip = orig;
       context[props[i]].skip._context = context;
+      completed = true;
+      break;
     }
   }
+  if (!completed) throw new Error('Could not set proxy');
 }
 shield.unset = function(proxy) {
+  var completed = false;
   var orig = proxy.skip;
   var props = Object.keys(proxy.skip._context);
   for (var i = 0, l = props.length; i < l; i++) {
     if (proxy.skip._context[props[i]].toString() === proxy.toString()) {
       proxy.skip._context[props[i]] = orig;
       if (orig._context) delete(orig._context);
+      completed = true;
+      break;
     }
   }
+  if (!completed) throw new Error('Could not unset proxy');
 }
 // node
 if (module && module.exports) module.exports = shield;

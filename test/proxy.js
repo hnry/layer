@@ -3,8 +3,8 @@ var should = require('should');
 
 var testData, proxy, context;
 
-var testProxy = function() {
-  var r = context.actual('no modifications', 'no modifications');
+var testProxy = function(f) {
+  var r = f('no modifications', 'no modifications');
   r[0].should.equal('modified by proxy');
   r[1].should.equal('no modifications');
   testData.should.equal('proxyactual');
@@ -29,9 +29,9 @@ describe('shield', function() {
     }
   })
 
-  it('set proxy', function() {
+  it('sets proxy', function() {
     shield.set(context, context.actual, proxy);
-    testProxy();
+    testProxy(context.actual);
   });
 
   it('skips proxy', function() {
@@ -42,10 +42,10 @@ describe('shield', function() {
     testData.should.equal('actual');
   });
 
-  it('unset proxy', function() {
+  it('unsets proxy', function() {
     // double check proxy is set
     shield.set(context, context.actual, proxy);
-    //testProxy();
+    testProxy(context.actual);
 
     shield.unset(context.actual);
     var r = context.actual('no modifications', 'no modifications');
@@ -56,9 +56,9 @@ describe('shield', function() {
     should.not.exist(context.actual._context);
   });
 
-  it('find context', function() {
+  it('finds context', function() {
     shield.set(null, context.actual, proxy);
-    testProxy();
+    testProxy(context.actual);
   });
 
 });
