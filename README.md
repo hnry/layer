@@ -14,6 +14,7 @@ Runs anywhere there's javascript (browser & node).
 var addBig = function(x, y) { 
   x = x * 100;
   y = y * 100;
+  return [x, y];
 }
 shield.set(null, add, addBig);
 
