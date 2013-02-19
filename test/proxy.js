@@ -61,4 +61,8 @@ describe('layer', function() {
     testProxy(context.actual);
   });
 
+  it('replace');
+
+  it('proxies a proxy that\'s a proxy of another proxy');
+
 });

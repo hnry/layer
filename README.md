@@ -37,10 +37,14 @@ You don't re-write your code! Or have to call `addBig()` directly.
 `layer.set(context, function to proxy, proxy function)`
 
 ### Skipping your proxy
-For those times when you want turn the layers down...
+For those times when you want turn skip a layer...
 
 `func.skip()` or following out add example `add.skip(2, 2)`
 
 ### Unsetting a proxy
 
 `layer.unset(func)` or following the example: `layer.unset(add)`
+
+### Replacing not proxying (monkey patching)
+
+`layer.replace(context, function to proxy, proxy function)`

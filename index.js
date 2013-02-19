@@ -1,12 +1,15 @@
+'use strict';
+
 var layer = {};
 
 layer.set = function(context, actual, proxy) {
   var completed = false;
-  if (!!context) global;
+  //if (!!context) global;
   var props = Object.keys(context);
+  //if (actual && proxy) 
   for (var i = 0, l = props.length; i < l; i++) {
     var orig = context[props[i]];
-    if (orig === actual) {
+    if (orig && orig.toString() === actual.toString()) {
       //var orig_arg_len = context[props[i]].length;
       context[props[i]] = function () {
         var ret = proxy.apply(null, Array.prototype.slice.call(arguments));
@@ -41,4 +44,4 @@ layer.unset = function(proxy) {
 }
 
 // node
-if (module && module.exports) module.exports = layer;
+if (typeof module !== 'undefined' && module.exports) module.exports = layer;

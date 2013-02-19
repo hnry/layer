@@ -1,0 +1,21 @@
+<script src='../index.js'></script>
+
+<script>
+var that = this;
+var addBig = function(x, y) { 
+  x = x * 100;
+  y = y * 100;
+  return [x, y];
+}
+
+// existing code...
+var add = function(x, y) {
+  return x + y;
+}
+
+layer.set(that, add, addBig);
+
+
+console.log(add(2, 2));
+
+</script>
