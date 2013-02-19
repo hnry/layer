@@ -22,13 +22,13 @@ var addBig = function(x, y) {
   x = x * 100;
   y = y * 100;
 }
-shield.set(null, addBig, add);
+shield.set(null, add, addBig);
 ```
 And that's it, all instances of calling `add()` in your existing code now go through `addBig()` then `add()`
 
-You don't re-write your code!
+You don't re-write your code! Or have to call `addBig()` directly.
 
 
 ## Usage / API
 
-shield.set(context, proxy function, function to proxy)
+shield.set(context, function to proxy, proxy function)
