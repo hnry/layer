@@ -24,4 +24,8 @@ describe('shield', function() {
     testData.should.equal('proxyactual');
   });
 
+  it('skips proxy');
+
+  it('unset proxy');
+
 });
