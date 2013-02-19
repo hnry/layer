@@ -19,11 +19,11 @@ var addBig = function(x, y) {
 layer.set(null, add, addBig);
 
 // existing code...
-var add = function(x, y) {
+function add(x, y) {
   return x + y;
 }
 
-add(2, 2);
+add(2, 2); // 400
 ```
 And that's it, all instances of calling `add()` in your existing code now go through `addBig()` then `add()`
 
