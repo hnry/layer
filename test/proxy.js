@@ -56,6 +56,10 @@ describe('layer', function() {
     should.not.exist(context.actual._context);
   });
 
+  /*
+   *  should be smart enough to know when you look up a prototype chain
+   *  or find the right scope
+   */
   it('finds context', function() {
     layer.set(null, context.actual, proxy);
     testProxy(context.actual);
@@ -63,6 +67,11 @@ describe('layer', function() {
 
   it('replace');
 
-  it('proxies a proxy that\'s a proxy of another proxy');
+  it('async proxy');
 
+  /*
+   *  Sets multiple proxies are different times async or sync
+   *  Can still skip and unset
+   */
+  it('proxies a proxy that\'s a proxy of another proxy');  
 });
