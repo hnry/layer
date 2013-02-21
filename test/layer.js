@@ -50,4 +50,8 @@ describe('layer', function() {
     cat.meow();
     testData.should.be.equal('purrmeow');   
   });
+
+  it('doesn\'t work on private var', function() {
+    
+  });
 });
