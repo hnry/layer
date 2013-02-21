@@ -15,6 +15,8 @@ if (typeof module !== 'undefined' && module.exports) layer.environment = 'nodejs
 layer._default_context = this;
 if (layer.environment === 'nodejs') layer._default_context = module.parent.exports;
 
+layer._context_level = 0;
+
 layer._find_context = function(context, actual, level) {
   var props = Object.keys(context);
   //if (actual && proxy) 
@@ -29,10 +31,9 @@ layer._find_context = function(context, actual, level) {
 
 layer.set = function(context, actual, proxy) {
   var completed = false;
-
   if (!context) context = layer._default_context;
 
-  var ctx = this._find_context(context, actual, 0);
+  var ctx = this._find_context(context, actual, this._context_level);
   if (ctx) {
     var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = function () {
@@ -53,10 +54,10 @@ layer.unset = function(proxy) {
   var completed = false;
   var orig = proxy.skip;
   if (proxy.skip && proxy.skip._context) {
-    var ctx = this._find_context(proxy.skip._context, proxy, 0);
+    var ctx = this._find_context(proxy.skip._context, proxy, this._context_level);
     if (ctx) {
-      ctx[0][ctx[1]] = orig;
       if (orig._context) delete(orig._context);
+      ctx[0][ctx[1]] = orig;
       completed = true;
     }
   }

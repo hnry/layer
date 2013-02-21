@@ -51,7 +51,25 @@ describe('layer', function() {
     testData.should.be.equal('purrmeow');   
   });
 
+  /*
+   *  private is private!
+   */
   it('doesn\'t work on private var', function() {
-    
+    var glob = {
+      local: function() {
+        var priv = function() {
+          testData += 'private';
+        }
+        try {
+          layer.set(this, priv, function() { testData += 'proxy' })
+        } catch(e) {
+          e.message.should.be.equal('Could not set proxy');
+        } finally { 
+          priv();
+        }
+      }
+    }
+    glob.local();
+    testData.should.be.equal('private');
   });
 });

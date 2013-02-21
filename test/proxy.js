@@ -53,7 +53,7 @@ describe('layer', function() {
     r[1].should.equal('no modifications');
     testData.should.equal('proxyactualactual');
     should.not.exist(context.actual.skip);
-    should.not.exist(context.actual._context);
+    Object.keys(context.actual).should.have.lengthOf(0);
   });
 
   /*
