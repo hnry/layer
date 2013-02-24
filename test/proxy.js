@@ -32,6 +32,8 @@ describe('layer', function() {
   it('sets proxy', function() {
     layer.set(context, context.actual, proxy);
     testProxy(context.actual);
+    context.actual.skip.should.be.a('function');
+    should.exist(context.actual.skip._context);
   });
 
   it('skips proxy', function() {
@@ -65,7 +67,13 @@ describe('layer', function() {
     testProxy(context.actual);
   });
 
-  it('replace');
+  it('replace', function() {
+    layer.replace(context, context.actual, proxy);
+    var r = context.actual.skip('no mod', 'no mod');
+    r[0].should.equal('no mod');
+    r[1].should.equal('no mod');
+    testData.should.equal('actual');
+  });
 
   it('async proxy');
 

@@ -13,6 +13,10 @@ describe('layer', function() {
     testData = '';
   });
 
+  /*
+   *  proxying a prototype function, will proxy a protoype 
+   *  function! (for now at least ;) )
+   */
   it('prototype proxy', function() {
     function Cat() {}
     Cat.prototype.meow = function() {
@@ -28,15 +32,11 @@ describe('layer', function() {
     layer.set(Cat.prototype, cat1.meow, purr);
     cat1.meow();
     testData.should.be.equal('purrmeow'); testData = '';
-    // Doing it this way modifies the prototype property for all other Cats too!
+    // Doing this modifies the prototype property for all other Cats too!
     var cat2 = new Cat();
     cat2.meow();
     testData.should.be.equal('purrmeow'); testData = '';
 
-    console.log(Object.keys(cat1))
-    console.log(Object.getOwnPropertyNames(cat1))
-    console.log(cat1.constructor)
-    console.log(cat1 instanceof Cat)
     // when no context is given, it should be obvious to find the right context
     layer.unset(cat1.meow);
     layer.set(null, cat1.meow, purr);
@@ -63,7 +63,7 @@ describe('layer', function() {
         try {
           layer.set(this, priv, function() { testData += 'proxy' })
         } catch(e) {
-          e.message.should.be.equal('Could not set proxy');
+          e.message.should.be.equal('Unable to find context');
         } finally { 
           priv();
         }

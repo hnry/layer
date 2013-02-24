@@ -15,7 +15,7 @@ if (typeof module !== 'undefined' && module.exports) layer.environment = 'nodejs
 layer._default_context = this;
 if (layer.environment === 'nodejs') layer._default_context = module.parent.exports;
 
-layer._context_level = 0;
+layer._context_level = 3;
 
 layer._find_context = function(context, actual, level) {
   var props = Object.keys(context);
@@ -27,7 +27,11 @@ layer._find_context = function(context, actual, level) {
       return [context, props[i]];
     }
   }
+  if (level === 0) throw new Error('Unable to find context');
+  return this._find_context(context, actual, level - 1);
 }
+
+layer.proxyStop = 'proxyStop';
 
 layer.set = function(context, actual, proxy) {
   var completed = false;
@@ -39,9 +43,17 @@ layer.set = function(context, actual, proxy) {
     ctx[0][ctx[1]] = function () {
       var ret = proxy.apply(ctx[0], Array.prototype.slice.call(arguments));
       if (ret) ret = Array.prototype.slice.call(ret);
-      var actualRet = orig.apply(ctx[0], ret);
-      if (actualRet) return actualRet;
+
+      /*
+      * a proxy can programmatically stop going
+      * need to design this better
+      */
+      if (ret && ret.join('') !== 'proxyStop') {
+        var actualRet = orig.apply(ctx[0], ret);
+        if (actualRet) return actualRet;
+      }
     }
+    
     ctx[0][ctx[1]].skip = orig;
     ctx[0][ctx[1]].skip._context = ctx[0];
     completed = true;
