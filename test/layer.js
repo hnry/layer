@@ -13,6 +13,14 @@ describe('layer', function() {
     testData = '';
   });
 
+  it('async proxy');
+
+  /*
+   *  Sets multiple proxies are different times async or sync
+   *  Can still skip and unset
+   */
+  it('proxies a proxy that\'s a proxy of another proxy');  
+
   /*
    *  proxying a prototype function, will proxy a protoype 
    *  function! (for now at least ;) )

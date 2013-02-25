@@ -3,8 +3,8 @@ var should = require('should');
 
 var testData, proxy, context;
 
-var testProxy = function(f) {
-  var r = f('no modifications', 'no modifications');
+var testProxy = function(fn) {
+  var r = fn('no modifications', 'no modifications');
   r[0].should.equal('modified by proxy');
   r[1].should.equal('no modifications');
   testData.should.equal('proxyactual');
@@ -25,18 +25,21 @@ describe('layer', function() {
       actual: function(arg_a, arg_b) {
         testData += 'actual';
         return [arg_a, arg_b];
+      },
+      replaceTest: function(x, y) {
+        throw new Error('it didn\'t replace');
       }
     }
   })
 
-  it('sets proxy', function() {
+  it('set proxy', function() {
     layer.set(context, context.actual, proxy);
     testProxy(context.actual);
     context.actual.skip.should.be.a('function');
     should.exist(context.actual.skip._context);
   });
 
-  it('skips proxy', function() {
+  it('skip proxy', function() {
     layer.set(context, context.actual, proxy);
     var r = context.actual.skip('no mod', 'no mod');
     r[0].should.equal('no mod');
@@ -44,7 +47,7 @@ describe('layer', function() {
     testData.should.equal('actual');
   });
 
-  it('unsets proxy', function() {
+  it('unset proxy', function() {
     // double check proxy is set
     layer.set(context, context.actual, proxy);
     testProxy(context.actual);
@@ -58,28 +61,35 @@ describe('layer', function() {
     Object.keys(context.actual).should.have.lengthOf(0);
   });
 
-  /*
-   *  should be smart enough to know when you look up a prototype chain
-   *  or find the right scope
-   */
-  it('finds context', function() {
-    layer.set(null, context.actual, proxy);
-    testProxy(context.actual);
+  it('Stop, stops', function() {
+    var stop = new layer.Stop;
+    stop.should.be.an.instanceof(layer.Stop);
+    /*
+      TODO test stop actually stops
+    */
   });
 
-  it('replace', function() {
-    layer.replace(context, context.actual, proxy);
-    var r = context.actual.skip('no mod', 'no mod');
-    r[0].should.equal('no mod');
-    r[1].should.equal('no mod');
-    testData.should.equal('actual');
+  it('replace function', function() {
+    layer.replace(context, context.actual, function(x, y) {
+      return 'replaced func' + x + y;
+    });
+    var r = context.actual('1', '2');
+    r.should.be.equal('replaced func12');
+    r = context.actual('1', '2');
+    r.should.be.equal('replaced func12');
+    should.not.exist(context.actual.skip);
+    should.not.exist(context.actual._context);
   });
 
-  it('async proxy');
+  describe('_internal', function() {
+    /*
+     *  should be smart enough to know when you look up a prototype chain
+     *  or find the right scope
+     */
+    it('finds context', function() {
+      layer.set(null, context.actual, proxy);
+      testProxy(context.actual);
+    });
+  });
 
-  /*
-   *  Sets multiple proxies are different times async or sync
-   *  Can still skip and unset
-   */
-  it('proxies a proxy that\'s a proxy of another proxy');  
 });

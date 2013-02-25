@@ -47,4 +47,4 @@ For those times when you want turn skip a layer...
 
 ### Replacing not proxying (monkey patching)
 
-`layer.replace(context, function to proxy, proxy function)`
+`layer.replace(context, function to replace, new function)`

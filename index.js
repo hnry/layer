@@ -5,7 +5,6 @@ var layer = {};
 // assume browser
 layer.environment = 'browser';
 if (typeof module !== 'undefined' && module.exports) layer.environment = 'nodejs';
-
 /*
  * this is only good for browser's
  * require.js will mess this up
@@ -15,8 +14,8 @@ if (typeof module !== 'undefined' && module.exports) layer.environment = 'nodejs
 layer._default_context = this;
 if (layer.environment === 'nodejs') layer._default_context = module.parent.exports;
 
-layer._context_level = 3;
 
+layer._context_level = 3;
 layer._find_context = function(context, actual, level) {
   var props = Object.keys(context);
   //if (actual && proxy) 
@@ -31,34 +30,26 @@ layer._find_context = function(context, actual, level) {
   return this._find_context(context, actual, level - 1);
 }
 
-layer.proxyStop = 'proxyStop';
+layer.Stop = function() {};
 
 layer.set = function(context, actual, proxy) {
   var completed = false;
   if (!context) context = layer._default_context;
-
   var ctx = this._find_context(context, actual, this._context_level);
   if (ctx) {
     var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = function () {
       var ret = proxy.apply(ctx[0], Array.prototype.slice.call(arguments));
       if (ret) ret = Array.prototype.slice.call(ret);
-
-      /*
-      * a proxy can programmatically stop going
-      * need to design this better
-      */
-      if (ret && ret.join('') !== 'proxyStop') {
+      if (ret && !(ret instanceof layer.Stop)) {
         var actualRet = orig.apply(ctx[0], ret);
         if (actualRet) return actualRet;
       }
     }
-    
     ctx[0][ctx[1]].skip = orig;
     ctx[0][ctx[1]].skip._context = ctx[0];
     completed = true;
   }
-
   if (!completed) throw new Error('Could not set proxy');
 }
 
@@ -74,6 +65,17 @@ layer.unset = function(proxy) {
     }
   }
   if (!completed) throw new Error('Could not unset proxy');
+}
+
+layer.replace = function(context, actual, newFn) {
+  var completed = false;
+  var ctx = this._find_context(context, actual, this._context_level);
+  if (ctx) {
+    var orig = ctx[0][ctx[1]];
+    ctx[0][ctx[1]] = newFn;
+    completed = true;
+  }
+  if (!completed) throw new Error('Could not replace function');
 }
 
 // node
