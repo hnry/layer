@@ -34,6 +34,10 @@ describe('layer', function() {
 
   describe('set', function() {
 
+    beforeEach(function() {
+      testData = '';
+    });
+
     it('proxy', function() {
       layer.set(context, context.actual, proxy);
       testProxy(context.actual);
@@ -52,7 +56,16 @@ describe('layer', function() {
       if (noerr) throw new Error('expected an error');
     });
 
-    it('no arguments uses call instead of apply');
+    it('no arguments uses call instead of apply', function() {
+      context.noargs = function() {
+        // since arguments is {} then call was used over apply
+        arguments.should.eql({});
+        testData += 'actual';
+      }
+      layer.set(context, context.noargs, function() { testData = 'proxy'; });
+      context.noargs();
+      testData.should.be.equal('proxyactual');
+    });
 
     it('maintains scope of the original function');
 
