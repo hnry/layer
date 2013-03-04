@@ -52,6 +52,10 @@ describe('layer', function() {
       if (noerr) throw new Error('expected an error');
     });
 
+    it('no arguments uses call instead of apply');
+
+    it('maintains scope of the original function');
+
     it('async proxy');
 
     it('multiple (async/sync) proxies');
