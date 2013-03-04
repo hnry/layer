@@ -29,6 +29,7 @@ And that's it, all instances of calling `add()` in your existing code now go thr
 
 You don't re-write your code! Or have to call `addBig()` directly.
 
+(Note: this won't work in node.js because `add` is private, see [here](#some-advice-on-knowing-the-context).)
 
 ## Usage / API
 
@@ -36,7 +37,7 @@ You don't re-write your code! Or have to call `addBig()` directly.
 
 `layer.set(context, function to proxy, proxy function)`
 
-Context being scope, read more about it [here](#some-advice-on-knowing-the-context).
+Context being scope or this, read more about it [here](#some-advice-on-knowing-the-context).
 
 When you set 'null' as the context, it'll default to 'exports' in node or global in the browser.
 
@@ -84,3 +85,9 @@ Cat.prototype.meow = function() {...}
 
 layer.set(Cat.prototype, Cat.prototype.meow, proxyFn)
 ```
+
+## TODO
+- support async proxy function
+- possibility / ability to proxy an object
+- multiple layers! add proxies on top of proxies (effectively could be used as flow control)
+- browser tests
