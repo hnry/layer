@@ -86,17 +86,10 @@ describe('context', function() {
    */
   describe('helper', function() {
 
-    it('null defaults to browser global or node module.exports', function() {
+    it('node module.exports', function() {
       if (layer._isNode) {
         // layer will throw a can't find context error if this fails
         var nullHelper = require('./helper/null.js');
-      } else {
-        // browser
-        throw new Error('todo')
-        global.actual = function() {
-
-        }
-        layer.set(null);
       }
     });
 

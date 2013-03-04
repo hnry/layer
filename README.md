@@ -16,7 +16,9 @@ var addBig = function(x, y) {
   y = y * 100;
   return [x, y];
 }
-layer.set(null, add, addBig);
+
+var that = this;
+layer.set(that, add, addBig);
 
 // existing code...
 function add(x, y) {
@@ -39,7 +41,7 @@ You don't re-write your code! Or have to call `addBig()` directly.
 
 Context being scope or this, read more about it [here](#some-advice-on-knowing-the-context).
 
-When you set 'null' as the context, it'll default to 'exports' in node or global in the browser.
+In the browser when you set 'null' as the context, it'll default to global (browser only).
 
 ### Unsetting a proxy
 

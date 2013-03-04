@@ -3,7 +3,7 @@
 var layer = {};
 
 if (typeof module !== 'undefined' && module.exports) layer._isNode = true;
-(layer._isNode) ? layer._default_context = module.parent.exports : layer._default_context = this;
+(layer._isNode) ? layer._default_context = {} : layer._default_context = this;
 
 layer._find_context = function(context, actual) {
   var props = Object.keys(context);

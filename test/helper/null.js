@@ -1,3 +1,4 @@
 var layer = require('../../index');
 exports.actual = function() {};
-layer.set(null, exports.actual, function() {});
+//console.log(module.exports);
+layer.set(exports, exports.actual, function() {});
