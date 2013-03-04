@@ -1,6 +1,6 @@
 {
   "name": "layer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "description": "transparently proxies functions, objects",
   "author": "lovebear",
@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "mocha": "*",
+    "uglify-js": "*",
     "should": "*"
   },
   "repository": "git://github.com/lovebear/layer.git"

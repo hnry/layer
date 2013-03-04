@@ -72,7 +72,7 @@ layer.replace = function(context, actual, newFn) {
   var completed = false;
   var ctx = this._find_context(context, actual, this._context_level);
   if (ctx) {
-    var orig = ctx[0][ctx[1]];
+    //var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = newFn;
     completed = true;
   }
