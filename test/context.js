@@ -1,83 +1,99 @@
 'use strict';
 
-/*
- *  Possible use case scenarios 
- *  where things should work, or pitfalls to watch out for
- */
 var layer = require('../index.js')
   , should = require('should');
 
 var testData;
-describe('layer', function() {
-  beforeEach(function() {
-    testData = '';
-  });
 
-  it('async proxy');
+describe('context', function() {
 
   /*
-   *  Sets multiple proxies are different times async or sync
-   *  Can still skip and unset
+   *  Possible use case scenarios 
+   *  where things should work, or pitfalls to watch out for
    */
-  it('proxies a proxy that\'s a proxy of another proxy');  
+  describe('use cases', function() {
 
-  /*
-   *  proxying a prototype function, will proxy a protoype 
-   *  function! (for now at least ;) )
-   */
-  it('prototype proxy', function() {
-    function Cat() {}
-    Cat.prototype.meow = function() {
-      testData += 'meow';
-    }
+    beforeEach(function() {
+      testData = '';
+    });
 
-    var purr = function() {
-      testData += 'purr';
-    }
+    /*
+     *  proxying a prototype function, will proxy a protoype 
+     *  function (for now ?) )
+     */
+    it('prototype', function() {
+      function Cat() {}
+      Cat.prototype.meow = function() {
+        testData += 'meow';
+      }
 
-    var cat1 = new Cat();
-    // set for specific Cat
-    layer.set(Cat.prototype, cat1.meow, purr);
-    cat1.meow();
-    testData.should.be.equal('purrmeow'); testData = '';
-    // Doing this modifies the prototype property for all other Cats too!
-    var cat2 = new Cat();
-    cat2.meow();
-    testData.should.be.equal('purrmeow'); testData = '';
+      var purr = function() {
+        testData += 'purr';
+      }
 
-    // when no context is given, it should be obvious to find the right context
-    layer.unset(cat1.meow);
-    layer.set(null, cat1.meow, purr);
-    cat1.meow();
-    testData.should.be.equal('purrmeow'); testData = '';
+      var cat1 = new Cat();
+      // set for specific Cat
+      layer.set(Cat.prototype, cat1.meow, purr);
+      cat1.meow();
+      testData.should.be.equal('purrmeow'); 
 
-    layer.unset(cat1.meow);
-    // the much more obvious way
-    layer.set(Cat.prototype, Cat.prototype.meow, purr);
-    var cat = new Cat();
-    cat.meow();
-    testData.should.be.equal('purrmeow');   
-  });
+      testData = '';
+      // Doing this modifies the prototype property for all other Cats too!
+      var cat2 = new Cat();
+      cat2.meow();
+      testData.should.be.equal('purrmeow'); 
 
-  /*
-   *  private is private!
-   */
-  it('doesn\'t work on private var', function() {
-    var glob = {
-      local: function() {
-        var priv = function() {
-          testData += 'private';
-        }
-        try {
-          layer.set(this, priv, function() { testData += 'proxy' })
-        } catch(e) {
-          e.message.should.be.equal('Unable to find context');
-        } finally { 
-          priv();
+      testData = '';
+      layer.unset(cat1.meow);
+      // the much more obvious way
+      layer.set(Cat.prototype, Cat.prototype.meow, purr);
+      var cat = new Cat();
+      cat.meow();
+      testData.should.be.equal('purrmeow');   
+    });
+
+    /*
+     *  private is private! (it won't work)
+     */
+    it('private var', function() {
+      var glob = {
+        local: function() {
+          var priv = function() {
+            testData += 'private';
+          }
+          try {
+            layer.set(this, priv, function() { testData += 'proxy' })
+          } catch(e) {
+            e.message.should.be.equal('Unable to find context');
+          } finally { 
+            priv();
+          }
         }
       }
-    }
-    glob.local();
-    testData.should.be.equal('private');
+      glob.local();
+      testData.should.be.equal('private');
+    });
+
   });
+
+
+  /*
+   *  Context helper, situations where layer will guess context
+   */
+  describe('helper', function() {
+
+    it('null defaults to browser global or node module.exports');
+
+    /*
+     *  When a constructor is given, but really you want the prototype
+     */
+    it.skip('prototype not constructor', function() {
+      // when no context is given, it should be obvious to find the right context
+      layer.unset(cat1.meow);
+      layer.set(null, cat1.meow, purr);
+      cat1.meow();
+      testData.should.be.equal('purrmeow'); testData = '';
+    });
+  });
+
 });

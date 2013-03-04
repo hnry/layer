@@ -40,9 +40,12 @@ layer.set = function(context, actual, proxy) {
     var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = function () {
       var ret = proxy.apply(ctx[0], Array.prototype.slice.call(arguments));
-      if (!!ret && !(ret instanceof layer.Stop)) {
+     /*
+      *   Unless ret is true and ret is an instace of layer.Stop...
+      */
+      if (!(!!ret && (ret instanceof layer.Stop))) {
         // what if the return isn't an array??
-        ret = Array.prototype.slice.call(ret);
+        if (ret) ret = Array.prototype.slice.call(ret);
         var actualRet = orig.apply(ctx[0], ret);
         if (actualRet) return actualRet;
       }

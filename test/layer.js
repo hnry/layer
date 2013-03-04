@@ -52,6 +52,10 @@ describe('layer', function() {
       if (noerr) throw new Error('expected an error');
     });
 
+    it('async proxy');
+
+    it('multiple (async/sync) proxies');
+
   });
 
 
@@ -82,6 +86,11 @@ describe('layer', function() {
       if (noerr) throw new Error('expected an error');
     });
 
+    /*
+     *  It'll unset all proxies (for now?)
+     */
+    it('multiple (async/sync) proxies');
+
   });
 
 
@@ -94,6 +103,11 @@ describe('layer', function() {
       r[1].should.equal('no mod');
       testData.should.equal('actual');
     });
+    
+    /*
+     *  It'll skip all proxies (for now?)
+     */
+    it('multiple (async/sync) proxies');
 
   });
 
