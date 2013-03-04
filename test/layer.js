@@ -57,6 +57,20 @@ describe('layer', function() {
       if (noerr) throw new Error('expected an error');
     });
 
+    it('non-array return', function() {
+      context.nonarrayReturn = function(x) {
+        x.should.eql({a: 1})
+        testData += 'actual';
+      }
+      layer.set(context, context.nonarrayReturn, function(y) {
+        y.should.eql(2);
+        testData += 'proxy';
+        return {a: 1};
+      });
+      context.nonarrayReturn(2);
+      testData.should.be.equal('proxyactual');
+    });
+
     it('no arguments uses call instead of apply', function() {
       context.noargs = function() {
         // since arguments is {} then call was used over apply

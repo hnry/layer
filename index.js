@@ -2,10 +2,8 @@
 
 var layer = {};
 
-// assume browser
 if (typeof module !== 'undefined' && module.exports) layer._isNode = true;
 (layer._isNode) ? layer._default_context = module.parent.exports : layer._default_context = this;
-
 
 layer._find_context = function(context, actual) {
   var props = Object.keys(context);
@@ -35,9 +33,12 @@ layer.set = function(context, actual, proxy) {
       if (!(!!ret && (ret instanceof layer.Stop))) {
         var actualRet;
         if (ret) {
-          // TODO what if the return isn't an array??
-          ret = Array.prototype.slice.call(ret);
-          actualRet = orig.apply(ctx[0], ret);
+          if (Array.isArray(ret)) {
+            ret = Array.prototype.slice.call(ret);
+            actualRet = orig.apply(ctx[0], ret);
+          } else {
+            actualRet = orig.call(ctx[0], ret);
+          }
         } else {
           // if there's no args, use call (better performance)
           actualRet = orig.call(ctx[0]);
