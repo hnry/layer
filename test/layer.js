@@ -26,6 +26,7 @@ describe('layer', function() {
         testData += 'actual';
         return [arg_a, arg_b];
       },
+      // used for replace test
       replaceTest: function(x, y) {
         throw new Error('it didn\'t replace');
       }
@@ -67,7 +68,15 @@ describe('layer', function() {
       testData.should.be.equal('proxyactual');
     });
 
-    it('maintains scope of the original function');
+    it('maintains scope of the original function', function() {
+      context.maintains = 'scope';
+      layer.set(context, context.actual, function() { 
+        this.maintains.should.be.equal('scope');
+        testData = 'proxy'; 
+      });
+      context.actual();
+      testData.should.be.equal('proxyactual');
+    });
 
     it('async proxy');
 
@@ -148,7 +157,7 @@ describe('layer', function() {
   });
 
 
-  it('Stop, stops', function() {
+  it.skip('Stop, stops', function() {
     var stop = new layer.Stop;
     stop.should.be.an.instanceof(layer.Stop);
     /*
