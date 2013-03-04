@@ -1,83 +1,128 @@
-'use strict';
+var layer = require('../index.js');
+var should = require('should');
 
-/*
- *  Possible use case scenarios 
- *  where things should work, or pitfalls to watch out for
- */
-var layer = require('../index.js')
-  , should = require('should');
+var testData, proxy, context;
 
-var testData;
+var testProxy = function(fn) {
+  var r = fn('no modifications', 'no modifications');
+  r[0].should.equal('modified by proxy');
+  r[1].should.equal('no modifications');
+  testData.should.equal('proxyactual');
+}
+
 describe('layer', function() {
+
   beforeEach(function() {
     testData = '';
-  });
-
-  it('async proxy');
-
-  /*
-   *  Sets multiple proxies are different times async or sync
-   *  Can still skip and unset
-   */
-  it('proxies a proxy that\'s a proxy of another proxy');  
-
-  /*
-   *  proxying a prototype function, will proxy a protoype 
-   *  function! (for now at least ;) )
-   */
-  it('prototype proxy', function() {
-    function Cat() {}
-    Cat.prototype.meow = function() {
-      testData += 'meow';
+    proxy = function(arg_a, arg_b) {
+      testData += 'proxy';
+      arg_a.should.equal('no modifications');
+      arg_b.should.equal('no modifications');
+      arg_a = 'modified by proxy';
+      return [arg_a, arg_b];
     }
-
-    var purr = function() {
-      testData += 'purr';
-    }
-
-    var cat1 = new Cat();
-    // set for specific Cat
-    layer.set(Cat.prototype, cat1.meow, purr);
-    cat1.meow();
-    testData.should.be.equal('purrmeow'); testData = '';
-    // Doing this modifies the prototype property for all other Cats too!
-    var cat2 = new Cat();
-    cat2.meow();
-    testData.should.be.equal('purrmeow'); testData = '';
-
-    // when no context is given, it should be obvious to find the right context
-    layer.unset(cat1.meow);
-    layer.set(null, cat1.meow, purr);
-    cat1.meow();
-    testData.should.be.equal('purrmeow'); testData = '';
-
-    layer.unset(cat1.meow);
-    // the much more obvious way
-    layer.set(Cat.prototype, Cat.prototype.meow, purr);
-    var cat = new Cat();
-    cat.meow();
-    testData.should.be.equal('purrmeow');   
-  });
-
-  /*
-   *  private is private!
-   */
-  it('doesn\'t work on private var', function() {
-    var glob = {
-      local: function() {
-        var priv = function() {
-          testData += 'private';
-        }
-        try {
-          layer.set(this, priv, function() { testData += 'proxy' })
-        } catch(e) {
-          e.message.should.be.equal('Unable to find context');
-        } finally { 
-          priv();
-        }
+    context = {
+      actual: function(arg_a, arg_b) {
+        testData += 'actual';
+        return [arg_a, arg_b];
+      },
+      replaceTest: function(x, y) {
+        throw new Error('it didn\'t replace');
       }
     }
-    glob.local();
-    testData.should.be.equal('private');
+  })
+
+  describe('set', function() {
+
+    it('proxy', function() {
+      layer.set(context, context.actual, proxy);
+      testProxy(context.actual);
+      context.actual.skip.should.be.a('function');
+      should.exist(context.actual.skip._context);
+    });
+
+    it('errors when can\'t set', function() {
+      var noerr = true;
+      var nonproxy = undefined;
+      try {
+        layer.set(null, nonproxy, function() {});
+      } catch(e) {
+        noerr = false;
+      }
+      if (noerr) throw new Error('expected an error');
+    });
+
   });
+
+
+  describe('unset', function() {
+
+    it('proxy', function() {
+      // double check proxy is set
+      layer.set(context, context.actual, proxy);
+      testProxy(context.actual);
+
+      layer.unset(context.actual);
+      var r = context.actual('no modifications', 'no modifications');
+      r[0].should.equal('no modifications');
+      r[1].should.equal('no modifications');
+      testData.should.equal('proxyactualactual');
+      should.not.exist(context.actual.skip);
+      Object.keys(context.actual).should.have.lengthOf(0);
+    });
+
+    it('throws error when can\'t unset', function() {
+      var noerr = true;
+      var nonproxy = function() {};
+      try {
+        layer.unset(nonproxy);
+      } catch(e) {
+        noerr = false;
+      }
+      if (noerr) throw new Error('expected an error');
+    });
+
+  });
+
+
+  describe('skip', function() {
+
+    it('proxy', function() {
+      layer.set(context, context.actual, proxy);
+      var r = context.actual.skip('no mod', 'no mod');
+      r[0].should.equal('no mod');
+      r[1].should.equal('no mod');
+      testData.should.equal('actual');
+    });
+
+  });
+
+
+  describe('replace', function() {
+
+    it('replace function', function() {
+      layer.replace(context, context.actual, function(x, y) {
+        return 'replaced func' + x + y;
+      });
+      var r = context.actual('1', '2');
+      r.should.be.equal('replaced func12');
+      r = context.actual('1', '2');
+      r.should.be.equal('replaced func12');
+      should.not.exist(context.actual.skip);
+      should.not.exist(context.actual._context);
+    });
+
+    it('throws error when can\'t replace');
+
+  });
+
+
+  it('Stop, stops', function() {
+    var stop = new layer.Stop;
+    stop.should.be.an.instanceof(layer.Stop);
+    /*
+      TODO test stop actually stops
+    */
+  });
+
 });
