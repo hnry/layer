@@ -33,6 +33,8 @@ You don't re-write your code! Or have to call `addBig()` directly.
 
 (Note: this won't work in node.js because `add` is private, see [here](#some-advice-on-knowing-the-context).)
 
+For some fun stuff you can do with layer, check out [intercept.js](https://github.com/lovebear/intercept.js).
+
 ## Usage / API
 
 ### Setting a proxy
@@ -71,8 +73,10 @@ use `layer.min.js`
 
 Because they're private. Not a big deal, and it's obvious enough. But keep in mind that in a node.js, the root of the module all your var's are effectively private (so the readme example above will not work).
 
-However, `export.add` and the context being 'export' would work.
+Work around would be `exports.add` and the context being 'exports' would work.
 Or if add was in an object `var obj = { add: ... }`, context being 'obj'.
+
+(Basically, it works like normal except for private variables.)
 
 Some more examples:
 

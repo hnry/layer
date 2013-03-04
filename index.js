@@ -7,7 +7,6 @@ if (typeof module !== 'undefined' && module.exports) layer._isNode = true;
 
 layer._find_context = function(context, actual) {
   var props = Object.keys(context);
-  //if (actual && proxy) 
   for (var i = 0, l = props.length; i < l; i++) {
     var orig = context[props[i]];
     if (orig && orig === actual) {
@@ -16,7 +15,6 @@ layer._find_context = function(context, actual) {
     }
   }
   throw new Error('Unable to find context');
-  //return this._find_context(context, actual);
 }
 
 layer.Stop = function() {};
@@ -40,7 +38,6 @@ layer.set = function(context, actual, proxy) {
             actualRet = orig.call(ctx[0], ret);
           }
         } else {
-          // if there's no args, use call (better performance)
           actualRet = orig.call(ctx[0]);
         }
         if (actualRet) return actualRet;
