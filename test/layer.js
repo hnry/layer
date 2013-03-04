@@ -63,7 +63,7 @@ describe('layer', function() {
         arguments.should.eql({});
         testData += 'actual';
       }
-      layer.set(context, context.noargs, function() { testData = 'proxy'; });
+      layer.set(context, context.noargs, function() { testData = 'proxy'; return null; });
       context.noargs();
       testData.should.be.equal('proxyactual');
     });

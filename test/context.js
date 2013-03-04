@@ -7,6 +7,10 @@ var testData;
 
 describe('context', function() {
 
+  it.skip('_find_context', function() {
+
+  });
+
   /*
    *  Possible use case scenarios 
    *  where things should work, or pitfalls to watch out for
@@ -82,7 +86,19 @@ describe('context', function() {
    */
   describe('helper', function() {
 
-    it('null defaults to browser global or node module.exports');
+    it('null defaults to browser global or node module.exports', function() {
+      if (layer._isNode) {
+        // layer will throw a can't find context error if this fails
+        var nullHelper = require('./helper/null.js');
+      } else {
+        // browser
+        throw new Error('todo')
+        global.actual = function() {
+
+        }
+        layer.set(null);
+      }
+    });
 
     /*
      *  When a constructor is given, but really you want the prototype
