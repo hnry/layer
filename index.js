@@ -24,19 +24,19 @@ layer._call = function(ctx, fn, args) {
   var ret;
   switch(args.length) {
     case 0:
-      ret = fn.call(ctx[0]);
+      ret = fn.call(ctx);
       break;
     case 1:
-      ret = fn.call(ctx[0], args[0]);
+      ret = fn.call(ctx, args[0]);
       break;
     case 2:
-      ret = fn.call(ctx[0], args[0], args[1]);
+      ret = fn.call(ctx, args[0], args[1]);
       break;
     case 3:
-      ret = fn.call(ctx[0], args[0], args[1], args[2]);
+      ret = fn.call(ctx, args[0], args[1], args[2]);
       break;
     default:
-      ret = fn.apply(ctx[0], args);
+      ret = fn.apply(ctx, args);
       break;
   }
   return ret;
@@ -49,7 +49,7 @@ layer.set = function(context, actual, proxy) {
   if (ctx) {
     var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = function () {
-      var ret = proxy.apply(ctx[0], Array.prototype.slice.call(arguments));
+      var ret = layer._call(ctx[0], proxy, Array.prototype.slice.call(arguments));
       //  Unless ret is true and ret is an instace of layer.Stop...
       if (!(!!ret && (ret instanceof layer.Stop))) {
         var actualRet;

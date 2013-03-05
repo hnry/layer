@@ -8,3 +8,6 @@ dist:
 pack:
 		rm -rf package; rm -rf layer*.tgz; 
 		npm pack .
+
+bench:
+		node benchmark/setup.js
