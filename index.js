@@ -20,9 +20,9 @@ layer._find_context = function(context, actual) {
 layer.Stop = function() {};
 
 layer._call = function(ctx, fn, args) {
-  // this is worth doing for the performance
   var ret;
-  switch(args.length) {
+  var len = args && args.length || 0;
+  switch(len) {
     case 0:
       ret = fn.call(ctx);
       break;
@@ -49,13 +49,12 @@ layer.set = function(context, actual, proxy) {
   if (ctx) {
     var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = function () {
-      var ret = layer._call(ctx[0], proxy, Array.prototype.slice.call(arguments));
+      var ret = layer._call(ctx[0], proxy, arguments);
       //  Unless ret is true and ret is an instace of layer.Stop...
       if (!(!!ret && (ret instanceof layer.Stop))) {
         var actualRet;
         if (ret) {
           if (Array.isArray(ret)) {
-            ret = Array.prototype.slice.call(ret);
             actualRet = layer._call(ctx[0], orig, ret);
           } else {
             actualRet = orig.call(ctx[0], ret);
