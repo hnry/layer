@@ -19,6 +19,29 @@ layer._find_context = function(context, actual) {
 
 layer.Stop = function() {};
 
+layer._call = function(ctx, fn, args) {
+  // this is worth doing for the performance
+  var ret;
+  switch(args.length) {
+    case 0:
+      ret = fn.call(ctx[0]);
+      break;
+    case 1:
+      ret = fn.call(ctx[0], args[0]);
+      break;
+    case 2:
+      ret = fn.call(ctx[0], args[0], args[1]);
+      break;
+    case 3:
+      ret = fn.call(ctx[0], args[0], args[1], args[2]);
+      break;
+    default:
+      ret = fn.apply(ctx[0], args);
+      break;
+  }
+  return ret;
+}
+
 layer.set = function(context, actual, proxy) {
   var completed = false;
   if (!context) context = layer._default_context;
@@ -33,7 +56,7 @@ layer.set = function(context, actual, proxy) {
         if (ret) {
           if (Array.isArray(ret)) {
             ret = Array.prototype.slice.call(ret);
-            actualRet = orig.apply(ctx[0], ret);
+            actualRet = layer._call(ctx[0], orig, ret);
           } else {
             actualRet = orig.call(ctx[0], ret);
           }
