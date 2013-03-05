@@ -1,5 +1,6 @@
-var layer = require('../index.js');
-var should = require('should');
+var layer = require('../index.js')
+  , should = require('should')
+  , bench = require('../benchmark/setup');
 
 var testData, proxy, context;
 
@@ -95,6 +96,10 @@ describe('layer', function() {
     it('async proxy');
 
     it('multiple (async/sync) proxies');
+
+    it('forwards the proper arguments', function() {
+      bench(true);
+    })
 
   });
 

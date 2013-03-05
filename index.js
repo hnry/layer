@@ -20,8 +20,8 @@ layer._find_context = function(context, actual) {
 layer.Stop = function() {};
 
 layer._call = function(ctx, fn, args) {
-  var ret;
-  var len = args && args.length || 0;
+  var ret
+    , len = args && args.length || 0;
   switch(len) {
     case 0:
       ret = fn.call(ctx);
@@ -53,15 +53,8 @@ layer.set = function(context, actual, proxy) {
       //  Unless ret is true and ret is an instace of layer.Stop...
       if (!(!!ret && (ret instanceof layer.Stop))) {
         var actualRet;
-        if (ret) {
-          if (Array.isArray(ret)) {
-            actualRet = layer._call(ctx[0], orig, ret);
-          } else {
-            actualRet = orig.call(ctx[0], ret);
-          }
-        } else {
-          actualRet = orig.call(ctx[0]);
-        }
+        if (!Array.isArray(ret) && !!ret) ret = [ret];
+        actualRet = layer._call(ctx[0], orig, ret);
         if (actualRet) return actualRet;
       }
     }

@@ -1,6 +1,6 @@
 {
   "name": "layer",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": false,
   "description": "transparently proxies functions, objects",
   "author": "lovebear",

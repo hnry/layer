@@ -10,4 +10,4 @@ pack:
 		npm pack .
 
 bench:
-		node benchmark/setup.js
+		node benchmark/run.js
