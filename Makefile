@@ -11,3 +11,9 @@ pack:
 
 bench:
 		node benchmark/run.js
+
+test:
+		./node_modules/mocha/bin/mocha -R spec
+
+.PHONY: test
+

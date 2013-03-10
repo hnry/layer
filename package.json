@@ -4,14 +4,14 @@
   "private": false,
   "description": "transparently proxies functions, objects",
   "author": "lovebear",
-  "license": "BSD",
+  "license": "MIT",
   "main": "index.js",
   "keywords": ["proxy", "transparent", "proxies"],
   "engines": {
     "node": ">= 0.6.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha -R dot"
+    "test": "./node_modules/.bin/mocha -R spec"
   },
   "devDependencies": {
     "mocha": "*",

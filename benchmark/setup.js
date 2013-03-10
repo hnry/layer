@@ -1,6 +1,5 @@
 var layer = require('../index')
-  , should = require('should')
-  , bench = require('../../workbench/index');
+  , should = require('should');
 
 var prettyNum = function(i) {
   var a = i.toString().split('')
@@ -70,7 +69,7 @@ module.exports = function(testMode) {
 
   function runner(fn, name) {
     var time;
-    (testMode) ? time = 0.1 : time = 7;
+    (testMode) ? time = 0.001 : time = 7;
     var cycles = prettyNum(bench.cycles(fn, time));
     if (!testMode) console.log(name, cycles);
   }
