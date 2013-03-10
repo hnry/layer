@@ -53,6 +53,7 @@ describe('layer', function() {
       try {
         layer.set(null, nonproxy, function() {});
       } catch(e) {
+        e.message.should.match(/context/);
         noerr = false;
       }
       if (noerr) throw new Error('expected an error');
@@ -126,6 +127,7 @@ describe('layer', function() {
       try {
         layer.unset(nonproxy);
       } catch(e) {
+        e.message.should.match(/unset/);
         noerr = false;
       }
       if (noerr) throw new Error('expected an error');
@@ -171,7 +173,16 @@ describe('layer', function() {
       should.not.exist(context.actual._context);
     });
 
-    it('throws error when can\'t replace');
+    it('throws error when can\'t replace', function() {
+      var err = false;
+      try {
+        layer.replace(context, undefined, function() { });
+      } catch(e) {
+        e.message.should.match(/context/);
+        err = true;
+      }
+      if (!err) throw new Error('Expected an error');
+    });
 
   });
 

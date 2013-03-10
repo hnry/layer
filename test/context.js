@@ -7,8 +7,27 @@ var testData;
 
 describe('context', function() {
 
-  it.skip('_find_context', function() {
+  it('_find_context', function() {
+    var ctx = {
+      actual: function() {}
+    }
+    var ret = layer._find_context(ctx, ctx.actual);
+    ret[0].should.be.equal(ctx);
+    ret[1].should.be.equal('actual');
 
+    // throws error when no context found
+    // also test ===
+    var err = false;
+    var fakectx = {
+      actual: function() {}
+    }
+    try {
+      layer._find_context(fakectx, ctx.actual);
+    } catch(e) {
+      e.message.should.match(/context/);
+      err = true;
+    }
+    if (!err) throw new Error('_find_context did not throw error');
   });
 
   /*
