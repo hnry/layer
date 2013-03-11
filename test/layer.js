@@ -94,9 +94,31 @@ describe('layer', function() {
       testData.should.be.equal('proxyactual');
     });
 
-    it('async proxy');
+    it('async proxy', function(done) {
+      var ctxAsync = {
+        actual: function(arg, cb) {
+          testData += arg + 'actual';
+          cb();
+        }
+      }
 
-    it('multiple (async/sync) proxies');
+      var proxyAsync = function (arg, cb, donee) {
+        setTimeout(function() {
+          testData += arg + 'proxy';
+          donee(arg + 'modified', cb);
+        }, 1);
+      }
+
+      layer.set(ctxAsync, ctxAsync.actual, proxyAsync);
+      ctxAsync.actual(123, function() {
+        testData.should.be.equal('123proxy123modifiedactual');
+        done();
+      });
+    });
+
+    it.skip('multiple (async/sync) proxies', function() {
+
+    });
 
     it('forwards the proper arguments', function() {
       bench(true);

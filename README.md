@@ -93,7 +93,6 @@ layer.set(Cat.prototype, Cat.prototype.meow, proxyFn)
 ```
 
 ## TODO
-- support async proxy function
 - possibility / ability to proxy an object
 - multiple layers! add proxies on top of proxies (effectively could be used as flow control)
-- browser tests
+- setup tests to run in browser

@@ -49,6 +49,18 @@ layer.set = function(context, actual, proxy) {
   if (ctx) {
     var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = function () {
+      var fns = [proxy, orig];
+      return function() {
+        var idx;
+        var next = function next() {
+          (idx === undefined) ? idx = 0 : idx += 1;
+          var args = Array.prototype.slice.call(arguments);
+          args.push(next);
+          layer._call(ctx[0], fns[idx], args);
+        };
+        layer._call(ctx[0], next, arguments);
+      }
+      /*
       var ret = layer._call(ctx[0], proxy, arguments);
       //  Unless ret is true and ret is an instace of layer.Stop...
       if (!(!!ret && (ret instanceof layer.Stop))) {
@@ -57,7 +69,8 @@ layer.set = function(context, actual, proxy) {
         actualRet = layer._call(ctx[0], orig, ret);
         if (actualRet) return actualRet;
       }
-    }
+      */
+    }()
     ctx[0][ctx[1]].skip = orig;
     ctx[0][ctx[1]].skip._context = ctx[0];
     completed = true;
