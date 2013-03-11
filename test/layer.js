@@ -177,7 +177,7 @@ describe('layer', function() {
       testData.should.equal('actual');
     });
     
-    it('within proxy', function() {
+    it.skip('within proxy', function() {
       // sync
       var proxyFunc = function(a, b, next) {
         next.skip(a, b);
