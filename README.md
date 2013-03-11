@@ -11,10 +11,10 @@ Runs anywhere there's javascript (browser & node).
 
 ```js
 // add a simple proxy without modifying any existing code!
-var addBig = function(x, y) { 
+var addBig = function(x, y, next) { 
   x = x * 100;
   y = y * 100;
-  return [x, y];
+  next(x, y);
 }
 
 var that = this;

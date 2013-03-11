@@ -20,9 +20,8 @@ layer._find_context = function(context, actual) {
 layer.Stop = function() {};
 
 layer._call = function(ctx, fn, args) {
-  var ret
-    , len = args && args.length || 0;
-  switch(len) {
+  var ret;
+  switch(args.length) {
     case 0:
       ret = fn.call(ctx);
       break;
@@ -50,15 +49,22 @@ layer.set = function(context, actual, proxy) {
     var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = function () {
       var fns = [proxy, orig];
+      var ret;
       return function() {
         var idx;
-        var next = function next() {
+        function next() {
           (idx === undefined) ? idx = 0 : idx += 1;
-          var args = Array.prototype.slice.call(arguments);
-          args.push(next);
-          layer._call(ctx[0], fns[idx], args);
+          if (fns.length === idx + 1) {
+            var args = arguments;
+            ret = layer._call(ctx[0], fns[idx], args);
+          } else {
+            var args = Array.prototype.slice.call(arguments);
+            args.push(next);
+            layer._call(ctx[0], fns[idx], args);
+          }
         };
         layer._call(ctx[0], next, arguments);
+        if (ret) return ret;
       }
       /*
       var ret = layer._call(ctx[0], proxy, arguments);

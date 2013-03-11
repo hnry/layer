@@ -69,7 +69,7 @@ module.exports = function(testMode) {
 
   function runner(fn, name) {
     var time;
-    (testMode) ? time = 0.001 : time = 7;
+    (testMode) ? time = 0.01 : time = 7;
     var cycles = prettyNum(bench.cycles(fn, time));
     if (!testMode) console.log(name, cycles);
   }

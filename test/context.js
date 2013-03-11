@@ -50,8 +50,9 @@ describe('context', function() {
         testData += 'meow';
       }
 
-      var purr = function() {
+      var purr = function(next) {
         testData += 'purr';
+        next();
       }
 
       var cat1 = new Cat();

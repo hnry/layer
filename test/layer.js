@@ -4,7 +4,7 @@ var layer = require('../index.js')
 
 var testData, proxy, context;
 
-var testProxy = function(fn) {
+var testProxyRunner = function(fn) {
   var r = fn('no modifications', 'no modifications');
   r[0].should.equal('modified by proxy');
   r[1].should.equal('no modifications');
@@ -15,12 +15,12 @@ describe('layer', function() {
 
   beforeEach(function() {
     testData = '';
-    proxy = function(arg_a, arg_b) {
+    proxy = function(arg_a, arg_b, next) {
       testData += 'proxy';
       arg_a.should.equal('no modifications');
       arg_b.should.equal('no modifications');
       arg_a = 'modified by proxy';
-      return [arg_a, arg_b];
+      next(arg_a, arg_b);
     }
     context = {
       actual: function(arg_a, arg_b) {
@@ -42,7 +42,7 @@ describe('layer', function() {
 
     it('proxy', function() {
       layer.set(context, context.actual, proxy);
-      testProxy(context.actual);
+      testProxyRunner(context.actual);
       context.actual.skip.should.be.a('function');
       should.exist(context.actual.skip._context);
     });
@@ -59,15 +59,16 @@ describe('layer', function() {
       if (noerr) throw new Error('expected an error');
     });
 
+    // old test case, doesn't really apply anymore
     it('non-array return', function() {
       context.nonarrayReturn = function(x) {
         x.should.eql({a: 1})
         testData += 'actual';
       }
-      layer.set(context, context.nonarrayReturn, function(y) {
+      layer.set(context, context.nonarrayReturn, function(y, next) {
         y.should.eql(2);
         testData += 'proxy';
-        return {a: 1};
+        next({a: 1});
       });
       context.nonarrayReturn(2);
       testData.should.be.equal('proxyactual');
@@ -79,16 +80,17 @@ describe('layer', function() {
         arguments.should.eql({});
         testData += 'actual';
       }
-      layer.set(context, context.noargs, function() { testData = 'proxy'; return null; });
+      layer.set(context, context.noargs, function(next) { testData = 'proxy'; next(); });
       context.noargs();
       testData.should.be.equal('proxyactual');
     });
 
     it('maintains scope of the original function', function() {
       context.maintains = 'scope';
-      layer.set(context, context.actual, function() { 
+      layer.set(context, context.actual, function(next) { 
         this.maintains.should.be.equal('scope');
-        testData = 'proxy'; 
+        testData += 'proxy';
+        next();
       });
       context.actual();
       testData.should.be.equal('proxyactual');
@@ -97,6 +99,8 @@ describe('layer', function() {
     it('async proxy', function(done) {
       var ctxAsync = {
         actual: function(arg, cb) {
+          // ensure last function doesn't get a layer cb
+          arguments.length.should.be.equal(2);
           testData += arg + 'actual';
           cb();
         }
@@ -132,7 +136,7 @@ describe('layer', function() {
     it('proxy', function() {
       // double check proxy is set
       layer.set(context, context.actual, proxy);
-      testProxy(context.actual);
+      testProxyRunner(context.actual);
 
       layer.unset(context.actual);
       var r = context.actual('no modifications', 'no modifications');
