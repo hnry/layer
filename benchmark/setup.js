@@ -51,6 +51,10 @@ module.exports = function(testMode) {
     args4: function(a,b,c,d) { 
       if (testMode) 
         (arguments.length).should.be.equal(4);
+    },
+    args5: function(a,b,c,d,e) { 
+      if (testMode) 
+        (arguments.length).should.be.equal(4);
     }
   }
 
@@ -58,7 +62,8 @@ module.exports = function(testMode) {
     , args1 = function(x) { return x; }
     , args2 = function(x,y) { return [x,y]; }
     , args3 = function(x,y,z) { return [x,y,z]; }
-    , args4 = function(a,b,c,d) { return [a,b,c,d]; };
+    , args4 = function(a,b,c,d) { return [a,b,c,d]; }
+    , args5 = function(a,b,c,d,e) { return [a,b,c,d]; };
 
 
   layer.set(actual, actual.args0, args0);
@@ -66,6 +71,7 @@ module.exports = function(testMode) {
   layer.set(actual, actual.args2, args2);
   layer.set(actual, actual.args3, args3);
   layer.set(actual, actual.args4, args4);
+  layer.set(actual, actual.args5, args5);
 
   function runner(fn, name) {
     var time;
@@ -79,4 +85,5 @@ module.exports = function(testMode) {
   runner(function() { actual.args2(1, 2); }, 'args2');
   runner(function() { actual.args3(1, 2, 3); }, 'args3');
   runner(function() { actual.args4(1, 2, 3, 4); }, 'args4');
+  runner(function() { actual.args4(1, 2, 3, 4, 5); }, 'args5');
 }

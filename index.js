@@ -34,6 +34,9 @@ layer._call = function(ctx, fn, args) {
     case 3:
       ret = fn.call(ctx, args[0], args[1], args[2]);
       break;
+    case 4:
+      ret = fn.call(ctx, args[0], args[1], args[2], args[3]);
+      break;
     default:
       ret = fn.apply(ctx, args);
       break;
@@ -58,12 +61,14 @@ layer.set = function(context, actual, proxy) {
             var args = arguments;
             ret = layer._call(ctx[0], fns[idx], args);
           } else {
-            var args = Array.prototype.slice.call(arguments);
-            args.push(next);
-            layer._call(ctx[0], fns[idx], args);
+            // avoid using array slice, this is faster
+            var alen = arguments.length;
+            arguments[alen] = next;
+            arguments.length = alen + 1;
+            layer._call(ctx[0], fns[idx], arguments);
           }
         };
-        layer._call(ctx[0], next, arguments);
+        layer._call(null, next, arguments);
         if (ret) return ret;
       }
       /*
