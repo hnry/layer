@@ -50,24 +50,30 @@ layer.set = function(context, actual, proxy) {
     var orig = ctx[0][ctx[1]];
     ctx[0][ctx[1]] = function () {
       var fns = [proxy, orig];
-      var ret;
       return function() {
-        var idx;
+        var idx, args = arguments, ret;
         function next() {
-          (idx === undefined) ? idx = 0 : idx += 1;
+          var r;
+          if (idx === undefined) {
+            idx = 0;
+          } else {
+            idx += 1;
+            args = arguments;
+          }
+          // last stop
           if (fns.length === idx + 1) {
-            var args = arguments;
-            ret = layer._call(ctx[0], fns[idx], args);
+            r = layer._call(ctx[0], fns[idx], args);
           } else {
             // avoid using array slice, this is faster
-            var alen = arguments.length;
-            arguments[alen] = next;
-            arguments.length = alen + 1;
-            layer._call(ctx[0], fns[idx], arguments);
+            var alen = args.length;
+            args[alen] = next;
+            args.length = alen + 1;
+            r = layer._call(ctx[0], fns[idx], args);
           }
+          if (r) ret = r;
         };
-        layer._call(null, next, arguments);
-        if (ret) return ret;
+        next();
+        return ret;
       }
     }();
     ctx[0][ctx[1]].skip = orig;

@@ -169,7 +169,7 @@ describe('layer', function() {
 
   describe('skip', function() {
 
-    it('proxy', function() {
+    it('directly', function() {
       layer.set(context, context.actual, proxy);
       var r = context.actual.skip('no mod', 'no mod');
       r[0].should.equal('no mod');
@@ -177,6 +177,21 @@ describe('layer', function() {
       testData.should.equal('actual');
     });
     
+    it('within proxy', function() {
+      // sync
+      var proxyFunc = function(a, b, next) {
+        next.skip(a, b);
+      }
+
+      // async
+      proxyFunc = function(a, b, cb, next) {
+        setTimeout(function() {
+          next.skip(a, b, cb);
+        }, 1);
+      }
+      
+    });
+
     /*
      *  It'll skip all proxies (for now?)
      */
@@ -212,12 +227,40 @@ describe('layer', function() {
 
   });
 
-
-  it.skip('stopping a proxy', function(done) {
+  /*
+   *  Basically to stop early, you don't call next
+   */
+  it('stopping a proxy', function(done) {
+    var ctx = {
+      actual: function() {
+        throw new Error('did not stop');
+      }
+    }
     // sync
-    
+    var proxyFunc = function(a, next) {
+      testData += 'proxy';
+      return a;
+    }
+    layer.set(ctx, ctx.actual, proxyFunc);
+    var ret = ctx.actual('test');
+    testData.should.be.equal('proxy');
+    ret.should.be.equal('test');
 
     // async
+    proxyFunc = function(a, cb, next) {
+      setTimeout(function() {
+        testData += 'proxy';
+        cb(a);
+      }, 1);
+    }
+    testData = ''; // reset testData
+    var ret = layer.set(ctx, ctx.actual, proxyFunc);
+    ctx.actual('test', function(a) {
+      a.should.be.equal('test');
+      testData.should.be.equal('proxy');
+      should.not.exist(ret);
+      done();
+    });
   });
 
 });

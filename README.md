@@ -97,8 +97,3 @@ Cat.prototype.meow = function() {...}
 
 layer.set(Cat.prototype, Cat.prototype.meow, proxyFn)
 ```
-
-## TODO
-- possibility / ability to proxy an object
-- multiple layers! add proxies on top of proxies (effectively could be used as flow control)
-- setup tests to run in browser
