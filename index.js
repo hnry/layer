@@ -17,8 +17,6 @@ layer._find_context = function(context, actual) {
   throw new Error('Unable to find context');
 }
 
-layer.Stop = function() {};
-
 layer._call = function(ctx, fn, args) {
   var ret;
   switch(args.length) {
@@ -71,17 +69,7 @@ layer.set = function(context, actual, proxy) {
         layer._call(null, next, arguments);
         if (ret) return ret;
       }
-      /*
-      var ret = layer._call(ctx[0], proxy, arguments);
-      //  Unless ret is true and ret is an instace of layer.Stop...
-      if (!(!!ret && (ret instanceof layer.Stop))) {
-        var actualRet;
-        if (!Array.isArray(ret) && !!ret) ret = [ret];
-        actualRet = layer._call(ctx[0], orig, ret);
-        if (actualRet) return actualRet;
-      }
-      */
-    }()
+    }();
     ctx[0][ctx[1]].skip = orig;
     ctx[0][ctx[1]].skip._context = ctx[0];
     completed = true;

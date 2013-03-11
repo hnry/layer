@@ -31,6 +31,9 @@ module.exports = function(testMode) {
     var bench = require('../../workbench/index');
   }
 
+/*
+  should return arguments.length and check the return instead
+*/
   var actual = {
     args0: function() { 
       if (testMode) 
@@ -54,16 +57,16 @@ module.exports = function(testMode) {
     },
     args5: function(a,b,c,d,e) { 
       if (testMode) 
-        (arguments.length).should.be.equal(4);
+        (arguments.length).should.be.equal(5);
     }
   }
 
   var args0 = function() {}
-    , args1 = function(x) { return x; }
-    , args2 = function(x,y) { return [x,y]; }
-    , args3 = function(x,y,z) { return [x,y,z]; }
-    , args4 = function(a,b,c,d) { return [a,b,c,d]; }
-    , args5 = function(a,b,c,d,e) { return [a,b,c,d]; };
+    , args1 = function(x, next) { next(x); }
+    , args2 = function(x,y, next) { next(x,y); }
+    , args3 = function(x,y,z, next) { next(x,y,z); }
+    , args4 = function(a,b,c,d, next) { next(a,b,c,d); }
+    , args5 = function(a,b,c,d,e, next) { next(a,b,c,d,e); };
 
 
   layer.set(actual, actual.args0, args0);
@@ -85,5 +88,5 @@ module.exports = function(testMode) {
   runner(function() { actual.args2(1, 2); }, 'args2');
   runner(function() { actual.args3(1, 2, 3); }, 'args3');
   runner(function() { actual.args4(1, 2, 3, 4); }, 'args4');
-  runner(function() { actual.args4(1, 2, 3, 4, 5); }, 'args5');
+  runner(function() { actual.args5(1, 2, 3, 4, 5); }, 'args5');
 }

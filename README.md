@@ -58,6 +58,12 @@ For those times when you want turn skip a layer...
 
 `layer.replace(context, function to replace, new function)`
 
+### Stopping a proxy early
+
+At anytime you may stop early by not calling `next`.
+
+And either call your callback (async) or return (sync);
+
 ## Install
 
 - node:

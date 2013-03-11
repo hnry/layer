@@ -213,12 +213,11 @@ describe('layer', function() {
   });
 
 
-  it.skip('Stop, stops', function() {
-    var stop = new layer.Stop;
-    stop.should.be.an.instanceof(layer.Stop);
-    /*
-      TODO test stop actually stops
-    */
+  it.skip('stopping a proxy', function(done) {
+    // sync
+    
+
+    // async
   });
 
 });
